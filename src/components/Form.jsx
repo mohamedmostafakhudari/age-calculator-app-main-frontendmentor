@@ -3,13 +3,15 @@ import { useState } from "react";
 import InputField from "./InputField";
 export default function Form({ state, dispatch }) {
   const [input, setInput] = useState({
-    day: "24",
-    month: "09",
-    year: "1984",
+    day: "",
+    month: "",
+    year: "",
   });
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isError, setIsError] = useState(false);
   function handleChange(e) {
     setIsError(false);
+    setIsSubmitted(false);
     setInput({
       ...input,
       [e.target.name]: e.target.value,
@@ -17,9 +19,67 @@ export default function Form({ state, dispatch }) {
   }
   function handleSubmit(e) {
     e.preventDefault();
+    setIsSubmitted(true);
+    console.log(isError);
     if (isError) return;
     dispatch(input);
   }
+  function validate(time, date) {
+    if (!isSubmitted) return;
+    if (time === "day") {
+      if (!date.day) {
+        return "This field is required";
+      } else if (date.day < 10 && !date.day.match(/0[1-9]/)) {
+        return "Must match the format eg:05";
+      } else if (
+        date.day < 1 ||
+        date.day > daysInMonth(parseInt(date.month), parseInt(date.year))
+      ) {
+        return "Must be a valid date";
+      }
+    } else if (time === "month") {
+      if (!date.month) {
+        return "This field is required";
+      } else if (date.month < 10 && !date.month.match(/0[1-9]/)) {
+        return "Must match the format eg:05";
+      } else if (date.month < 1 || date.month > 12) {
+        return "Must be a valid month";
+      }
+    } else if (time === "year") {
+      if (!date.year) {
+        return "This field is required";
+      } else if (date.year < 1) {
+        return "Must be a valid year";
+      } else if (!date.year.match(/[1-2][0-9]{3}/)) {
+        return "Must match the format";
+      } else if (date.year > new Date().getFullYear()) {
+        return "Must be in the past";
+      }
+    }
+  }
+  function daysInMonth(month, year) {
+    switch (month) {
+      case 1:
+      case 3:
+      case 5:
+      case 7:
+      case 9:
+      case 11:
+        return 31;
+      case 2:
+        return leapYear(year) ? 29 : 28;
+      default:
+        return 30;
+    }
+  }
+  function leapYear(year) {
+    if ((0 == year % 4 && 0 != year % 100) || 0 == year % 400) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   return (
     <form action="/" onSubmit={handleSubmit}>
       <div className="flex gap-4">
@@ -28,6 +88,7 @@ export default function Form({ state, dispatch }) {
           onChange={handleChange}
           value={input.day}
           error={validate("day", input)}
+          isError={isError}
           setIsError={setIsError}
         />
         <InputField
@@ -35,6 +96,7 @@ export default function Form({ state, dispatch }) {
           onChange={handleChange}
           value={input.month}
           error={validate("month", input)}
+          isError={isError}
           setIsError={setIsError}
         />
         <InputField
@@ -42,6 +104,7 @@ export default function Form({ state, dispatch }) {
           onChange={handleChange}
           value={input.year}
           error={validate("year", input)}
+          isError={isError}
           setIsError={setIsError}
         />
       </div>
@@ -82,58 +145,4 @@ export default function Form({ state, dispatch }) {
       </div>
     </form>
   );
-}
-function validate(time, date) {
-  if (time === "day") {
-    if (!date.day) {
-      return "This field is required";
-    } else if (date.day < 10 && !date.day.match(/0[1-9]/)) {
-      return "Must match the format eg:05";
-    } else if (
-      date.day < 1 ||
-      date.day > daysInMonth(parseInt(date.month), parseInt(date.year))
-    ) {
-      return "Must be a valid date";
-    }
-  } else if (time === "month") {
-    if (!date.month) {
-      return "This field is required";
-    } else if (date.month < 10 && !date.month.match(/0[1-9]/)) {
-      return "Must match the format eg:05";
-    } else if (date.month < 1 || date.month > 12) {
-      return "Must be a valid month";
-    }
-  } else if (time === "year") {
-    if (!date.year) {
-      return "This field is required";
-    } else if (date.year < 1) {
-      return "Must be a valid year";
-    } else if (!date.year.match(/[1-2][0-9]{3}/)) {
-      return "Must match the format";
-    } else if (date.year > new Date().getFullYear()) {
-      return "Must be in the past";
-    }
-  }
-}
-function daysInMonth(month, year) {
-  switch (month) {
-    case 1:
-    case 3:
-    case 5:
-    case 7:
-    case 9:
-    case 11:
-      return 31;
-    case 2:
-      return leapYear(year) ? 29 : 28;
-    default:
-      return 30;
-  }
-}
-function leapYear(year) {
-  if ((0 == year % 4 && 0 != year % 100) || 0 == year % 400) {
-    return true;
-  } else {
-    return false;
-  }
 }

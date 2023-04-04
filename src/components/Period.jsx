@@ -3,17 +3,17 @@ import { useRef } from "react";
 import { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 
-function Number({ from, to }) {
+function Number({ to }) {
   const { number } = useSpring({
-    from: { number: +from },
+    from: { number: 0 },
     number: to,
-    delay: 200,
+    delay: 100,
     config: { mass: 1, tension: 20, friction: 10 },
   });
 
   return <animated.div>{number.to((n) => n.toFixed(0))}</animated.div>;
 }
-export default function Period({ num, label }) {
+export default function Period({ num, label, isEmpty }) {
   const [prevValue, setPrevValue] = useState(null);
   const prevRef = useRef(null);
   useEffect(() => {
@@ -23,7 +23,14 @@ export default function Period({ num, label }) {
   return (
     <div className="text-secondarytext flex gap-3">
       <div className="text-primarytext" ref={prevRef}>
-        <Number from={prevValue} to={num} />
+        {isEmpty ? (
+          <>--</>
+        ) : (
+          <>
+            {" "}
+            <Number to={num} />
+          </>
+        )}
       </div>{" "}
       <div>{label}</div>
     </div>

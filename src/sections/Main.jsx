@@ -9,13 +9,13 @@ const reducer = (prevState, currentState) => {
   };
 };
 const initialDate = {
-  day: "24",
-  month: "09",
-  year: "1984",
+  day: "",
+  month: "",
+  year: "",
 };
 export default function Main() {
   const [state, dispatch] = useReducer(reducer, initialDate);
-  console.log(state);
+
   return (
     <main className="bg-primarybg py-10 rounded-lg rounded-br-[100px] max-w-[340px] md:min-w-[540px]">
       <div className="container mx-auto px-6 md:px-8">

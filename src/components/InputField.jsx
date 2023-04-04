@@ -1,6 +1,13 @@
 import React from "react";
 import { useEffect } from "react";
-export default function InputField({ id, onChange, value, error, setIsError }) {
+export default function InputField({
+  id,
+  onChange,
+  value,
+  error,
+  isError,
+  setIsError,
+}) {
   useEffect(() => {
     if (error) {
       setIsError(true);
@@ -13,7 +20,7 @@ export default function InputField({ id, onChange, value, error, setIsError }) {
       <label
         htmlFor={id}
         className={`text-label uppercase tracking-[2px] font-[700] text-xs ${
-          error && "text-error"
+          isError && "text-error"
         }`}
       >
         {id}
@@ -26,11 +33,11 @@ export default function InputField({ id, onChange, value, error, setIsError }) {
         onChange={onChange}
         placeholder={id === "day" ? "DD" : id === "month" ? "MM" : "YYYY"}
         className={`border border-border w-full text-xl font-semibold p-2 px-4 rounded-lg mt-1 duration-200 ease-in-out cursor-pointer hover:border-primarytext md:max-w-[120px] outline-none hover:outline-none focus:outline-none placeholder:text-label focus:border-primarytext ${
-          error && "border-error focus:border-error hover:border-error"
+          isError && "border-error focus:border-error hover:border-error"
         }`}
       />
       <p className="text-xs font-regular italic text-error mt-2 max-w-[120px]">
-        {error}
+        {isError && error}
       </p>
     </div>
   );

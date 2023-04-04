@@ -14,13 +14,17 @@ export default function Display({ state }) {
   }
   return (
     <div className="text-[3.425rem] tracking-tight leading-[60px] font-extrabold italic mt-8 md:text-7xl md:mt-0">
-      <Period prev={state.year} num={year} label={"years"} />
+      <Period num={year} label={"years"} isEmpty={!state.year} />
       <Period
-        prev={state.month}
         num={month < 0 ? month + 12 : month}
         label={"months"}
+        isEmpty={!state.month}
       />
-      <Period prev={state.day} num={day < 0 ? day + 30 : day} label={"days"} />
+      <Period
+        num={day < 0 ? day + 30 : day}
+        label={"days"}
+        isEmpty={!state.day}
+      />
     </div>
   );
 }
